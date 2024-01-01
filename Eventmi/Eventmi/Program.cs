@@ -1,7 +1,13 @@
+using Eventmi.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<EventmiDbContext>(options=>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("EventmiConnection")));
 
 var app = builder.Build();
 
