@@ -30,7 +30,7 @@ namespace Eventmi.Core.Services
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public async Task AddAsync(EventDetailsModel model)
+        public async Task AddAsync(EventModel model)
         {
             Event entity = new Event()
             {
@@ -79,7 +79,7 @@ namespace Eventmi.Core.Services
         /// </summary>
         /// <param name="id">id of the event</param>
         /// <returns></returns>
-        public async Task<EventDetailsModel> GetEventAsync(int id)
+        public async Task<EventModel> GetEventAsync(int id)
         {
             var entity = await repo.GetByIdAsync<Event>(id);
 
@@ -88,12 +88,13 @@ namespace Eventmi.Core.Services
                 throw new ArgumentException("Invalid id", nameof(id));
             }
 
-            return new EventDetailsModel()
+            return new EventModel()
             {
                 Name = entity.Name,
                 End = entity.End,
                 Start = entity.Start,
-                Place = entity.Place
+                Place = entity.Place,
+                Id = entity.Id
             };
         }
 

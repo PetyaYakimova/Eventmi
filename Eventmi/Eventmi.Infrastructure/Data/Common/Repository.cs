@@ -10,7 +10,7 @@ namespace Eventmi.Infrastructure.Data.Common
     /// </summary>
     /// <typeparam name="T">Type of the data table to which 
     /// current reposity is attached</typeparam>
-    public abstract class Repository : IRepository
+    public class Repository : IRepository
     {
         public Repository(EventmiDbContext context)
         {
