@@ -38,7 +38,12 @@ namespace Eventmi.Controllers
         [HttpGet]
         public IActionResult Add()
         {
-            var model = new EventModel();
+            var model = new EventModel()
+            {
+                Start = DateTime.Today,
+                End = DateTime.Today
+
+            };
 
             return View(model);
         }
@@ -84,6 +89,77 @@ namespace Eventmi.Controllers
             catch (Exception ex)
             {
                 logger.LogError("EventController/Details", ex);
+
+                ViewBag.ErrorMessage = "Unexpected error occured.";
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                await eventService.DeleteAsync(id);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("EventController/Detele", ex);
+
+                ViewBag.ErrorMessage = "Unexpected error occured.";
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            EventModel model;
+
+            try
+            {
+                model = await eventService.GetEventAsync(id);
+
+                return View(model);
+            }
+            catch (ArgumentException aex)
+            {
+                ViewBag.ErrorMessage = aex.Message;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("EventController/Details", ex);
+
+                ViewBag.ErrorMessage = "Unexpected error occured.";
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(EventModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            try
+            {
+                await eventService.UpdateAsync(model);
+
+                return RedirectToAction(nameof(Details), new { id = model.Id });
+            }
+            catch (ArgumentException aex)
+            {
+                ViewBag.ErrorMessage = aex.Message;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("EventController/Edit", ex);
 
                 ViewBag.ErrorMessage = "Unexpected error occured.";
             }
